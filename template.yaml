@@ -1,0 +1,51 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  just_gym
+
+  Sample SAM Template for just_gym
+
+Globals:
+  Function:
+    Timeout: 3
+
+Resources:
+  HelloWorldFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: just_gym/
+      Handler: app.lambda_handler
+      Runtime: python3.11
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          NOTIFY_SNS_TOPIC: "arn:aws:sns:eu-central-1:712095305072:just_gym"
+          NOTIFY_SNS_FLAG: "true"
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /hello
+            Method: get
+
+  GymSignupSchedule:
+    Type: AWS::Events::Rule
+    Properties:
+      ScheduleExpression: cron(1 11 ? * MON,FRI *)
+      State: ENABLED
+      Targets:
+        - Arn: !GetAtt HelloWorldFunction.Arn
+          Id: "GymSignupTarget"
+      Input: '{}'
+
+Outputs:
+  HelloWorldApi:
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+  HelloWorldFunction:
+    Description: "Hello World Lambda Function ARN"
+    Value: !GetAtt HelloWorldFunction.Arn
+  HelloWorldFunctionIamRole:
+    Description: "Implicit IAM Role created for Hello World function"
+    Value: !GetAtt HelloWorldFunctionRole.Arn

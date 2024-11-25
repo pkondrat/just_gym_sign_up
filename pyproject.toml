@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "just-gym"
+version = "0.1.0"
+description = ""
+authors = ["Kondratowicz, Piotr <Piotr.Kondratowicz@pmi.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+requests = "^2.32.3"
+boto3 = "^1.35.68"
+pytest = "^8.3.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
